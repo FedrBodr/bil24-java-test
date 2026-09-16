@@ -8,7 +8,7 @@
 
 **Tech Stack:** Java 17/21, Maven 3.9.9 через Maven Wrapper, JUnit Jupiter 5.11.4, JMH 1.37, Python 3.9+ для получения эталона.
 
-**Статус:** на ревью; пункты ниже не выполнены. Фрагменты кода — конкретные указания для будущей реализации, не готовые исходные файлы.
+**Статус:** одобрен владельцем 16.09.2026; выполнение начато. Фрагменты кода — конкретные указания для будущей реализации, не готовые исходные файлы.
 
 ## Global Constraints
 
@@ -52,7 +52,7 @@
 - Consumes: URL и SHA-256 из спецификации, два именованных Java-файла архива.
 - Produces: `.cache/bil24/reference-src/reference/ParserSeat.java` и `ResultParser.java`; `reference.ParserSeat.parser(String,long)`; `ParserInputCorpus.create(String): String[]`; `benchmarks/target/benchmarks.jar` с методом `ParserBenchmark.baseline`.
 
-- [ ] **1.1. Написать тест загрузчика до реализации.** Python `unittest`: неправильный SHA отклоняется; для каждого исходного файла обратная замена `package reference;` даёт исходные байты; отсутствующий или повторный `package test;` отклоняется. Использовать маленький архив в памяти, без сетевого запроса в unit-тесте. Контракт функций:
+- [x] **1.1. Написать тест загрузчика до реализации.** Python `unittest`: неправильный SHA отклоняется; для каждого исходного файла обратная замена `package reference;` даёт исходные байты; отсутствующий или повторный `package test;` отклоняется. Использовать маленький архив в памяти, без сетевого запроса в unit-тесте. Контракт функций:
 
 ```python
 verify_archive(data: bytes, expected_sha256: str) -> None
@@ -68,7 +68,7 @@ def test_package_relocation_preserves_the_rest(self):
     self.assertEqual(source, actual.replace(b"package reference;", b"package test;", 1))
 ```
 
-- [ ] **1.2. Выполнить `python3 -m unittest discover -s scripts -p 'test_*.py'`.** Сначала получить ошибку отсутствующей реализации. После добавления функций ниже ожидать успешное выполнение:
+- [x] **1.2. Выполнить `python3 -m unittest discover -s scripts -p 'test_*.py'`.** Сначала получить ошибку отсутствующей реализации. После добавления функций ниже ожидать успешное выполнение:
 
 ```python
 def verify_archive(data: bytes, expected_sha256: str) -> None:
@@ -84,9 +84,9 @@ def relocate_source(data: bytes) -> bytes:
     return data.replace(old, b"package reference;", 1)
 ```
 
-- [ ] **1.3. Добавить `main` загрузчика.** Вычислить корень относительно `Path(__file__).resolve().parents[1]`; читать существующий `.cache/bil24/test_src.zip` либо загрузить URL через `urllib.request.urlopen(..., timeout=30)`; проверить SHA; только затем сохранять архив и два разрешённых имени. Использовать `ZipFile(BytesIO(data)).read(name)`, а не `extractall`. Записывать результат `relocate_source` в указанные пути. Любое исключение даёт ненулевой exit code. Сообщение успеха содержит SHA и пути, но не весь исходник. Проверить повторный запуск на локальном кэше и запуск с испорченной копией в отдельном `TemporaryDirectory`.
+- [x] **1.3. Добавить `main` загрузчика.** Вычислить корень относительно `Path(__file__).resolve().parents[1]`; читать существующий `.cache/bil24/test_src.zip` либо загрузить URL через `urllib.request.urlopen(..., timeout=30)`; проверить SHA; только затем сохранять архив и два разрешённых имени. Использовать `ZipFile(BytesIO(data)).read(name)`, а не `extractall`. Записывать результат `relocate_source` в указанные пути. Любое исключение даёт ненулевой exit code. Сообщение успеха содержит SHA и пути, но не весь исходник. Проверить повторный запуск на локальном кэше и запуск с испорченной копией в отдельном `TemporaryDirectory`.
 
-- [ ] **1.4. Создать сборку, необходимую для эталона.** Parent coordinates: `com.fedrbodr.bil24:bil24-java-test:1.0-SNAPSHOT`, packaging `pom`. На этом шаге обычный модуль — `seat-parser`; профиль `comparison` добавляет `benchmarks`. Для Maven Wrapper выполнить:
+- [x] **1.4. Создать сборку, необходимую для эталона.** Parent coordinates: `com.fedrbodr.bil24:bil24-java-test:1.0-SNAPSHOT`, packaging `pom`. На этом шаге обычный модуль — `seat-parser`; профиль `comparison` добавляет `benchmarks`. Для Maven Wrapper выполнить:
 
 ```sh
 mvn org.apache.maven.plugins:maven-wrapper-plugin:3.3.2:wrapper -Dmaven=3.9.9
@@ -107,7 +107,7 @@ mvn org.apache.maven.plugins:maven-wrapper-plugin:3.3.2:wrapper -Dmaven=3.9.9
 
 `benchmarks` зависит от `seat-parser`, `jmh-core`, JUnit в test scope. `jmh-generator-annprocess` на annotation processor path; generated JMH-код не редактировать. `build-helper:add-source` в generate-sources добавляет `${project.basedir}/../.cache/bil24/reference-src`. Enforcer в validate проверяет оба файла; сообщение содержит `python3 scripts/fetch_reference.py`. Shade задаёт main class `org.openjdk.jmh.Main` и итоговое имя `benchmarks.jar`.
 
-- [ ] **1.5. Зафиксировать поведение оригинала тестом.** Этот тест ещё не зависит от оптимизированной реализации:
+- [x] **1.5. Зафиксировать поведение оригинала тестом.** Этот тест ещё не зависит от оптимизированной реализации:
 
 ```java
 @Test
@@ -123,7 +123,7 @@ void preservesRepeatedSeatMarkerBehavior() {
 
 Добавить проверки `null`, несовпадения и пустого ряда/места согласно таблице P1–P8. Запуск: `python3 scripts/fetch_reference.py`, затем `./mvnw -Pcomparison clean verify`. Ожидание: `BUILD SUCCESS`, выполняется `ReferenceContractTest`; отсутствие эталона не даёт успешную сборку профиля.
 
-- [ ] **1.6. Подготовить детерминированный корпус.** `ParserInputCorpus.create(dataset)` возвращает 256 строк, `i` от 0 до 255, по следующим точным правилам:
+- [x] **1.6. Подготовить детерминированный корпус.** `ParserInputCorpus.create(dataset)` возвращает 256 строк, `i` от 0 до 255, по следующим точным правилам:
 
 ```java
 String value = switch (dataset) {
@@ -143,7 +143,7 @@ String value = switch (dataset) {
 
 Добавить тест размера корпуса и успешности/неуспешности его категорий на оригинале. Запретить возвращать общий изменяемый массив между вызовами фабрики.
 
-- [ ] **1.7. Добавить JMH state и единственный исходный benchmark.** State — отдельный public-класс с `@State(Scope.Thread)`, полями `@Param({"latin", "cyrillic", "noSectorName", "invalid", "repeatedMarkers"}) public String dataset`, `String[] seatNameList`, `int cursor`, `long id`; в `@Setup(Level.Trial)` заполнить массив через фабрику и обнулить счётчики. Benchmark:
+- [x] **1.7. Добавить JMH state и единственный исходный benchmark.** State — отдельный public-класс с `@State(Scope.Thread)`, полями `@Param({"latin", "cyrillic", "noSectorName", "invalid", "repeatedMarkers"}) public String dataset`, `String[] seatNameList`, `int cursor`, `long id`; в `@Setup(Level.Trial)` заполнить массив через фабрику и обнулить счётчики. Benchmark:
 
 ```java
 @Benchmark
@@ -155,11 +155,11 @@ public reference.ResultParser baseline(ParserBenchmarkState state) {
 
 На этом этапе не добавлять метод optimized. Собрать профиль, выполнить parser smoke-команду из методики. Ожидание: один benchmark × один dataset, без ошибок.
 
-- [ ] **1.8. Добавить CI проверки JDK 17 и 21.** Workflow использует checkout и setup-java с проверенными фиксированными commit SHA официальных actions; distribution `temurin`, cache `maven`. Шаги: Python unit-тесты, явная загрузка эталона, `./mvnw -B -Pcomparison clean verify`. JDK 21 дополнительно запускает parser smoke. Timeout job — 15 минут, permissions — `contents: read`. Полные измерения в CI не запускаются.
+- [x] **1.8. Добавить CI проверки JDK 17 и 21.** Workflow использует checkout и setup-java с проверенными фиксированными commit SHA официальных actions; distribution `temurin`, cache `maven`. Шаги: Python unit-тесты, явная загрузка эталона, `./mvnw -B -Pcomparison clean verify`. JDK 21 дополнительно запускает parser smoke. Timeout job — 15 минут, permissions — `contents: read`. Полные измерения в CI не запускаются.
 
-- [ ] **1.9. Проверить файлы для коммита, сделать содержательный commit инфраструктуры.** В Git входят инструменты и наши тесты, не `.cache`, `target` или исходники `reference`. Пример сообщения: `test: establish reproducible BIL24 reference and benchmark harness`.
+- [x] **1.9. Проверить файлы для коммита, сделать содержательный commit инфраструктуры.** В Git входят инструменты и наши тесты, не `.cache`, `target` или исходники `reference`. Пример сообщения: `test: establish reproducible BIL24 reference and benchmark harness`.
 
-- [ ] **1.10. С чистой рабочей копией выполнить три первоначальные baseline-команды из методики.** Перед запуском записать окружение и commit SHA. Проверить 5 результатов в каждом JSON, одинаковые параметры и отсутствие ошибок. Сохранить файлы и отдельным коммитом `perf: record initial parser baseline`. Это первый проверяемый результат плана.
+- [x] **1.10. С чистой рабочей копией выполнить три первоначальные baseline-команды из методики.** Перед запуском записать окружение и commit SHA. Проверить 5 результатов в каждом JSON, одинаковые параметры и отсутствие ошибок. Сохранить файлы и отдельным коммитом `perf: record initial parser baseline`. Это первый проверяемый результат плана.
 
 ## Task 2: Совместимый оптимизированный парсер
 
