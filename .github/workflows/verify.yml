@@ -42,3 +42,10 @@ jobs:
           java -jar benchmarks/target/benchmarks.jar '.*ParserBenchmark.*'
           -p dataset=latin -bm avgt -tu ns -t 1 -f 1 -wi 1 -i 1
           -w 100ms -r 100ms
+
+      - name: Smoke test template benchmark
+        if: matrix.java == '21'
+        run: >-
+          java -jar benchmarks/target/benchmarks.jar '.*TemplateRenderBenchmark.*'
+          -p anchorCount=10 -bm avgt -tu ns -t 1 -f 1 -wi 1 -i 1
+          -w 100ms -r 100ms
