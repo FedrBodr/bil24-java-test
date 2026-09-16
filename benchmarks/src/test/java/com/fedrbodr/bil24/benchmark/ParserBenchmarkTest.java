@@ -35,4 +35,21 @@ class ParserBenchmarkTest {
     assertEquals(2L, second.getId());
     assertEquals(2, state.cursor);
   }
+
+  @Test
+  void optimizedCyclesThroughTheNewParser() {
+    ParserBenchmarkState state = new ParserBenchmarkState();
+    state.dataset = "cyrillic";
+    state.setup();
+    ParserBenchmark benchmark = new ParserBenchmark();
+
+    test.ResultParser first = benchmark.optimized(state);
+    test.ResultParser second = benchmark.optimized(state);
+
+    assertEquals("CETHYOPXABKM0", first.getSectorName());
+    assertEquals(1L, first.getId());
+    assertEquals("CETHYOPXABKM1", second.getSectorName());
+    assertEquals(2L, second.getId());
+    assertEquals(2, state.cursor);
+  }
 }

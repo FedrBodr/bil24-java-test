@@ -8,4 +8,10 @@ public class ParserBenchmark {
     return reference.ParserSeat.parser(
         state.seatNameList[state.cursor++ & 255], ++state.id);
   }
+
+  @Benchmark
+  public test.ResultParser optimized(ParserBenchmarkState state) {
+    return test.ParserSeat.parser(
+        state.seatNameList[state.cursor++ & 255], ++state.id);
+  }
 }
