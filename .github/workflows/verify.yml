@@ -1,0 +1,44 @@
+name: Verify
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        java: ["17", "21"]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@03ad4de0992f5dab5e18fcb136590ce7c4a0ac95 # v5.6.0
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+          cache: maven
+
+      - name: Test reference downloader
+        run: python3 -m unittest discover -s scripts -p 'test_*.py'
+
+      - name: Download verified reference
+        run: python3 scripts/fetch_reference.py
+
+      - name: Verify comparison build
+        run: ./mvnw -B -Pcomparison clean verify
+
+      - name: Smoke test parser benchmark
+        if: matrix.java == '21'
+        run: >-
+          java -jar benchmarks/target/benchmarks.jar '.*ParserBenchmark.*'
+          -p dataset=latin -bm avgt -tu ns -t 1 -f 1 -wi 1 -i 1
+          -w 100ms -r 100ms

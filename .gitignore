@@ -1,6 +1,7 @@
 **/target/
 .cache/
 .tmp/
+.superpowers/
 .idea/
 *.iml
 .DS_Store
