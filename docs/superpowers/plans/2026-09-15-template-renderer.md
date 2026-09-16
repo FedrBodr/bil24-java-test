@@ -1,6 +1,6 @@
 # BIL24 Template Renderer Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Реализовать и объяснить подстановки в неизменяемые шаблоны и измерить стоимость переноса подготовки за пределы запроса.
 
@@ -275,7 +275,7 @@ public CompiledTemplate compile(TemplateBenchmarkData data) {
 - [x] **4.3. Проверить Git-состав.** `git ls-files` не должен содержать `.cache`, `target`, архив BIL24, `reference/*.java` или бинарный benchmark jar. Проверить ссылки в Markdown. JSON и logs допустимы только как фактические результаты измерений. Никаких токенов или локальных конфигураций аккаунтов.
 - [x] **4.4. Сверить P1–P8, T1–T8 и B1–B8 с кодом, тестами и отчётом.** Отмечать checkbox только при наличии проверки. Не утверждать устранение худшего случая исходной регулярки или улучшение реального веб-сервера.
 - [x] **4.5. Обновить README текущим статусом, командами и результатами.** Вынести 2–3 подтверждённых наблюдения со ссылками на полные таблицы. Если скорость статистически не отличается, сообщить это вместо рекламного коэффициента.
-- [ ] **4.6. Сделать финальный документирующий commit и push.** Передать владельцу GitHub-ссылки на основные классы, тесты, отчёт, raw JSON и commit SHA. Отдельно указать ограничения и результаты CI. Завершение реализации не означает, что владелец уже одобрил финальный код.
+- [x] **4.6. Сделать финальный документирующий commit и push.** Передать владельцу GitHub-ссылки на основные классы, тесты, отчёт, raw JSON и commit SHA. Отдельно указать ограничения и результаты CI. Завершение реализации не означает, что владелец уже одобрил финальный код.
 
 ## Проверка покрытия перед исполнением
 
