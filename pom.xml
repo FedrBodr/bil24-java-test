@@ -11,6 +11,7 @@
 
   <modules>
     <module>seat-parser</module>
+    <module>template-renderer</module>
   </modules>
 
   <properties>
