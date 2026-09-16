@@ -1,0 +1,3 @@
+# Preserve JMH's original formatting in measurement evidence.
+docs/results/**/*.log -whitespace
+docs/results/**/*.json -whitespace
