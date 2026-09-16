@@ -102,3 +102,15 @@ java -jar benchmarks/target/benchmarks.jar '.*ParserBenchmark.baseline' -bm thrp
 ```sh
 java -jar benchmarks/target/benchmarks.jar '.*ParserBenchmark.baseline' -bm thrpt -tu s -t 4 -f 3 -wi 5 -i 5 -w 1s -r 1s -prof gc -jvmArgs '-Xms512m -Xmx512m -XX:+UseG1GC' -rf json -rff docs/results/baseline-initial/parser-throughput-t4.json > docs/results/baseline-initial/parser-throughput-t4.log 2>&1
 ```
+
+### Повторная проверка Maven Wrapper, 16.09.2026
+
+Вывод `./mvnw -version` проверен после измерений парсера и перед измерениями шаблонов; версия Wrapper и Maven не менялась. Ранее зафиксированная версия — 3.9.9.
+
+```text
+Apache Maven 3.9.9 (8e8579a9e76f7d015ee5ec7bfcdc97d260186937)
+Maven home: /private/tmp/bil24-tools/maven-home/wrapper/dists/apache-maven-3.9.9/3477a4f1
+Java version: 21.0.6, vendor: Amazon.com Inc., runtime: /Users/d.fedorenko/Library/Java/JavaVirtualMachines/corretto-21.0.6/Contents/Home
+Default locale: en_RU, platform encoding: UTF-8
+OS name: "mac os x", version: "14.4", arch: "aarch64", family: "mac"
+```
